@@ -5,7 +5,7 @@ package org.ming.leetcodeoj;
  * @author: Li Ming
  * @date: 2019年07月08 00时14分
  */
-public class leetcodeoj_970_20190708 {
+public class Leetcodeoj_970_20190708 {
     /*
         Given two positive integers x and y, an integer is powerful if it is equal to x^i + y^j for some integers i >= 0 and j >= 0.
 
