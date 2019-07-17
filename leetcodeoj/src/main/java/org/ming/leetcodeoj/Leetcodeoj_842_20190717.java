@@ -8,7 +8,7 @@ import java.util.List;
  * @author: LeoMee
  * @date: 2019年07月13 12时41分
  */
-public class Leetcodeoj_842_未知 {
+public class Leetcodeoj_842_20190717 {
 
     /**
      * Given a string S of digits, such as S = "123456579",
