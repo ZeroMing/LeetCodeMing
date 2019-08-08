@@ -11,7 +11,7 @@ import java.util.List;
  * @version:
  * @date: 2019/8/8 19:16
  */
-public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
+public class HeapImpl<T extends Comparable<T>>{
 
     private List<T> heap;
 
@@ -25,6 +25,7 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
     protected void adjustUp(int start) {
         // 当前下标
         int currentIndex = start;
+        // 父节点
         int parentIndex = (currentIndex - 1) / 2;
         T tmp = heap.get(currentIndex);
         while (currentIndex > 0) {
@@ -42,14 +43,12 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
         heap.set(currentIndex, tmp);
     }
 
-
-
-    @Override
+    
     public void display() {
         System.out.println(heap);
     }
 
-    @Override
+    
     public void initOriginList(List<T> orginList) {
         this.orginList = orginList;
     }
@@ -58,36 +57,30 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
         this.heap = new ArrayList<>();
     }
 
-    @Override
+    
     public void makeHeap(int first, int last) {
         for (int i = first; i < last; i++) {
-            insert(orginList.get(i));
+            int size = heap.size();
+            // 将"数组"插在表尾
+            heap.add(orginList.get(i));
+            // 向上调整堆
+            adjustUp(size);
         }
     }
 
-    @Override
-    public void popHeap(int first, int last) {
-        remove(first);
+
+    public void popHeap(int first) {
+        int size = heap.size();
+        // 将 最后一个值 设置到 第一个位置
+        heap.set(first, heap.get(size - 1));
+        // 最后一个元素删除
+        heap.remove(size - 1);
+        adjustDown(first);
     }
 
-    @Override
+
     public void pushHeap(int first, int last) {
         adjustUp(last - 1);
-    }
-
-    public void insert(T data) {
-        int size = heap.size();
-        // 将"数组"插在表尾
-        heap.add(data);
-        // 向上调整堆
-        adjustUp(size);
-    }
-
-    public void remove(int index) {
-        int size = heap.size();
-        heap.set(index, heap.get(size - 1));
-        heap.remove(size - 1);
-        adjustDown(index);
     }
 
     /**
@@ -96,11 +89,16 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
      * @param index
      */
     private void adjustDown(int index) {
+        // 下沉
         int currentIndex = index;
+        // 左子节点
         int leftChildIndex = index * 2 + 1;
+        // 右子节点
         int rightChildIndex = index * 2 + 2;
+        // 取临时值
         T tmp = heap.get(currentIndex);
         int size = heap.size();
+        // 左孩子小于长度
         while (leftChildIndex < size) {
             T left = null;
             T right = null;
@@ -125,7 +123,7 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
 
 
 
-    @Override
+    
     public List<T> getHeap() {
         return heap;
     }
@@ -133,16 +131,16 @@ public class HeapImpl<T extends Comparable<T>> implements IHeap<T> {
 
 
     public static void main(String[] args) {
-        IHeap<Integer> heap = new HeapImpl<>();
+        HeapImpl<Integer> heap = new HeapImpl<>();
         heap.initOriginList(Arrays.asList(10, 20, 30, 5, 15));
         System.out.println("初始构建堆：");
-        heap.makeHeap(0, 5);
+        heap.makeHeap(0,5);
         heap.display();
         System.out.println("弹出堆顶：");
-        heap.popHeap(0, 5);
+        heap.popHeap(0);
         heap.display();
         System.out.println("弹出堆顶：");
-        heap.popHeap(0, 4);
+        heap.popHeap(0);
         heap.display();
         System.out.println("插入堆尾：");
         heap.getHeap().add(90);
