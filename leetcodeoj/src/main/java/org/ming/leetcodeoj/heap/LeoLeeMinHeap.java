@@ -1,4 +1,4 @@
-package org.ming.leetcodeoj.base;
+package org.ming.leetcodeoj.heap;
 
 import java.util.Arrays;
 
