@@ -43,7 +43,10 @@ public class Leetcodeoj_283_2019_08_11_array_easy {
     }
 
 
-
+    /**
+     * 将所有的非零元素，按顺序排到住数组前面。之后，将后面的位置填0即可。
+     * @param nums
+     */
     public void moveZeroes2(int[] nums) {
         int index = 0;
         for(int i =0;i < nums.length;i++){
