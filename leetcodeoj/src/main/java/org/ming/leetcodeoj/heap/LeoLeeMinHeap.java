@@ -9,19 +9,17 @@ import java.util.Arrays;
  */
 public class LeoLeeMinHeap {
 
-    private void maxHeapSort(Integer[] array) {
+    private static void maxHeapSort(LeoLeeMinHeap leoLeeMinHeap, Integer[] array) {
         // 暂存交换元素
         Integer tmp;
         //执行初始建大根堆，并调整
-        makeMaxHeap(array);
-
         for (int i=0;i<array.length;i++){
             // 交换堆顶元素array[0]和堆中最后一个元素array[array.length-1-i]
             tmp=array[0];
             array[0]=array[array.length-i-1];
             array[array.length-i-1]=tmp;
             // 每次交换堆顶元素和堆中最后一个元素之后，都要对堆进行调整
-            adjustHeap(array,0,array.length-i-1);
+            leoLeeMinHeap.adjustHeap(array,0,array.length-i-1);
         }
     }
 
