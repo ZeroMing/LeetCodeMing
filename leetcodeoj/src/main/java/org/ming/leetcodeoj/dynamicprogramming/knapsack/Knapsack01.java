@@ -1,7 +1,5 @@
 package org.ming.leetcodeoj.dynamicprogramming.knapsack;
 
-import java.util.Scanner;
-
 /**
  * 01背包
  * @author: LeoLee
@@ -9,62 +7,93 @@ import java.util.Scanner;
  */
 public class Knapsack01 {
 
+    static int[] weight = {2,3,4,5};
+    static int[] value = {3,4,5,6};
+    static int count = 4;
+    static int maxWeight = 8;
+    /** 记录物品是否被选择 */
+    static int[] option = new int[count];
+    /** 动态规划记忆数组 */
+    static int[][] dp = new int[count+1][maxWeight+1];
+    /**  一维数组 */
+    static int[] dp_one = new int[maxWeight+1];
 
     public static void main(String[] args) {
         Knapsack01 knapsack01 = new Knapsack01();
-
-        int[] weight = {2,3,4,5};
-        int[] value = {3,4,5,6};
-        int count = 4;
-        int maxWeight = 8;
-        // 动态规划记忆数组
-        int[][] dp = new int[count+1][maxWeight+1];
-        // 一维数组
-        int[] knapsack_one = new int[maxWeight+1];
-        // int maxValue = knapsack01.pack01ViolenceRecursive(0, 10);
-        // System.out.println("最大价值:"+maxValue);
-        // 暴力生成
+        int maxValue = knapsack01.pack01ViolenceRecursive(0,maxWeight);
+         System.out.println("正向递归最大价值:"+maxValue);
+         maxValue = knapsack01.pack01ViolenceRecursive1(count, maxWeight);
+         System.out.println("反向递归最大价值:"+maxValue);
+        // 暴力生成子集组合
         int[][] array = new int[16][4];
-        int maxValue = knapsack01.pack01BruteForce(array, weight, value, 4, maxWeight);
-        //System.out.println(maxValue);
-        // System.out.println("暴力破解背包: " + maxValue);
-        maxValue = knapsack01.knapsack01Dp(dp,weight,value,count,maxWeight);
-        // knapsack01.print(dp,count,maxWeight);
-        System.out.println("二维数组背包: " + maxValue);
-        maxValue = knapsack01.knapsack01One(knapsack_one,weight,value,count,maxWeight);
-        System.out.println("一维数组背包: "+ maxValue);
+//        maxValue = knapsack01.pack01BruteForce(array, weight, value, 4, maxWeight);
+//        System.out.println("暴力破解背包: " + maxValue);
+//        maxValue = knapsack01.knapsack01Dp(dp,weight,value,count,maxWeight);
+//        System.out.println("二维数组背包: " + maxValue);
+//        maxValue = knapsack01.knapsack01One(dp_one,weight,value,count,maxWeight);
+//        System.out.println("一维数组背包: "+ maxValue);
     }
 
-
     /**
+     * 正向递归
      * 暴力破解 01 背包
+     * 缺点:重复计算公共子问题。导致数据量大的情况下，效率下降很快。
      * @param index 所选物品下标
      * @param remainingCapacity 剩余背包容量
      * @return
      */
-    public int   pack01ViolenceRecursive(int index,int[] weight,int[] value,int count,int remainingCapacity){
+    public int   pack01ViolenceRecursive(int index,int remainingCapacity){
         int  res;
-        // 没有剩余的空间
+        // 没有可选择的物品
         if(index == count){
             res = 0;
-
         } else if(remainingCapacity < weight[index]){
             // 剩余空间小于该物品的体积
-            res = pack01ViolenceRecursive(index+1,weight,value,count,remainingCapacity);
-
+            res = pack01ViolenceRecursive(index+1,remainingCapacity);
         } else {
             // 剩余空间大于该物品的体积
             // 一个物品选还是不选。比较
-            res = Math.max(pack01ViolenceRecursive(index+1,weight,value,count,remainingCapacity),pack01ViolenceRecursive(index+1,weight,value,count,remainingCapacity-weight[index])+value[index]);
+            res = Math.max(
+                    pack01ViolenceRecursive(index+1,remainingCapacity),
+                    pack01ViolenceRecursive(index+1,remainingCapacity-weight[index])
+                            +value[index]);
+        }
+        return res;
+    }
+
+
+    /**
+     * 反向递归
+     * 暴力破解 01 背包
+     * 缺点:重复计算公共子问题。导致数据量大的情况下，效率下降很快
+     * @param count
+     * @param remainingCapacity
+     * @return
+     */
+    public int   pack01ViolenceRecursive1(int count,int remainingCapacity){
+        int  res = 0;
+        // 没有可选择的物品或者没有空间，跳出递归
+        if(count == 0 ||  remainingCapacity == 0){
+            res = 0;
+        } else {
+            // 如果当前要判断的物品重量大于背包当前所剩的容量，那么就不选择这个物品
+            if(weight[count-1] > remainingCapacity){
+                return pack01ViolenceRecursive1(count-1,remainingCapacity);
+            }else{
+                // 返回选择物品i和不选择物品i中最优解大的一个
+                return Math.max(pack01ViolenceRecursive1(count-1,remainingCapacity),value[count-1] + pack01ViolenceRecursive1(count
+                        -1,remainingCapacity-weight[count-1]));
+            }
         }
         return res;
     }
 
 
 
+
     /**
      * 暴力破解 01 背包
-     * 穷举法
+     * 穷举法。需要穷举所有的子集。然后进行循环判断。数据量大的情况下，效率低。
      * @param array
      * @param weight
      * @param value
@@ -105,8 +134,11 @@ public class Knapsack01 {
     }
 
 
-
-
+    /**
+     * 计算所有的子集组合
+     * @param array
+     * @param count
+     */
     public void subArray(int[][] array,int count){
         // 2 ^ N 个子集
         // 总共有2^n个子集，需要进行2^n次循环，及数组A有2^n行
@@ -119,7 +151,6 @@ public class Knapsack01 {
                 temp1 = temp1 / 2;
             }
         }
-
         printArray(array);
     }
 
@@ -137,6 +168,7 @@ public class Knapsack01 {
 
     /**
      * 二维数据组
+     * 此处为了与填表中的数据保持一致，创建的数组元素多一个。
      * 动态规划
      */
     public int knapsack01Dp(int[][] dp,int[] weight,int[] value,int count,int maxWeight){
@@ -174,11 +206,11 @@ public class Knapsack01 {
      */
     public int knapsack01One(int[] knapsack_one,int[] weight,int[] value,int count,int maxCapacity){
         // 第i个物品
-        for(int i= 0;i < count;i++){
+        for(int i= 1;i <= count;i++){
             // 容量
             for(int j= maxCapacity;j>=1;j--){
-                if(j >= weight[i] && knapsack_one[j] < knapsack_one[j-weight[i]]+value[i] ){
-                    knapsack_one[j] = knapsack_one[j-weight[i]]+value[i];
+                if(j >= weight[i-1] && knapsack_one[j] < knapsack_one[j-weight[i-1]]+value[i-1] ){
+                    knapsack_one[j] = knapsack_one[j-weight[i-1]]+value[i-1];
                 }
             }
         }

@@ -3,6 +3,7 @@ package org.ming.leetcodeoj.dynamicprogramming.knapsack;
 import java.util.Scanner;
 
 /**
+ * 完全背包
  * @Description:
  * @Author: LeoLee
  * @Date: 2019年10月17 23时27分
@@ -18,7 +19,7 @@ public class KnapsackWhole {
         int[] weight = {2,3,4,5};
         //存储每个物体的收益，下标从1开始
         int[] value = {3,4,5,6};
-        //降成二维数组，用来保存每种状态下的最大收益
+        // 二维数组，用来保存每种状态下的最大收益
         int[][] dp = new int[count+1][maxWeight+1];
         //降成一维数组，用来保存每种状态下的最大收益
         int[] dpOne = new int[maxWeight+1];
@@ -73,6 +74,7 @@ public class KnapsackWhole {
 
     /**
      * 一维
+     * 顺序枚举
      */
     public void completePackNonRecursiveOne(int[] dpOne,int[] weight,int[] value,int count,int maxWeight) {
         //对一维数组F进行初始化
@@ -110,11 +112,11 @@ public class KnapsackWhole {
             dpOne[i] = 0;
         }
 
-        for(int i = 0; i < count; i++) {
+        for(int i = 1; i <= count; i++) {
             // 唯一不同的地方，j是正序遍历
             // 当剩余容量小于物体的容量不进行处理
-            for(int j = weight[i]; j < dpOne.length; j++) {
-                dpOne[j] = Math.max(dpOne[j - weight[i]] + value[i], dpOne[j]);
+            for(int j = weight[i-1]; j <= dpOne.length; j++) {
+                dpOne[j] = Math.max(dpOne[j - weight[i-1]] + value[i-1], dpOne[j]);
             }
         }
 
