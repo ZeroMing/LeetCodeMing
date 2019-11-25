@@ -29,7 +29,8 @@ public class Knapsack01 {
 //        maxValue = knapsack01.pack01BruteForce(array, weight, value, 4, maxWeight);
 //        System.out.println("暴力破解背包: " + maxValue);
 //        maxValue = knapsack01.knapsack01Dp(dp,weight,value,count,maxWeight);
-//        System.out.println("二维数组背包: " + maxValue);
+        maxValue = knapsack01.knapsack01DpCompress(dp,weight,value,count,maxWeight);
+        System.out.println("二维数组背包: " + maxValue);
 //        maxValue = knapsack01.knapsack01One(dp_one,weight,value,count,maxWeight);
 //        System.out.println("一维数组背包: "+ maxValue);
     }
@@ -81,8 +82,8 @@ public class Knapsack01 {
                 return pack01ViolenceRecursive1(count-1,remainingCapacity);
             }else{
                 // 返回选择物品i和不选择物品i中最优解大的一个
-                return Math.max(pack01ViolenceRecursive1(count-1,remainingCapacity),value[count-1] + pack01ViolenceRecursive1(count
-                        -1,remainingCapacity-weight[count-1]));
+                return Math.max(pack01ViolenceRecursive1(count-1,remainingCapacity),value[count-1] +
+                        pack01ViolenceRecursive1(count -1,remainingCapacity-weight[count-1]));
             }
         }
         return res;
@@ -94,10 +95,6 @@ public class Knapsack01 {
     /**
      * 暴力破解 01 背包
      * 穷举法。需要穷举所有的子集。然后进行循环判断。数据量大的情况下，效率低。
-     * @param array
-     * @param weight
-     * @param value
-     * @param maxWeight
      * @return
      */
     public int   pack01BruteForce(int[][] array,int[] weight,int[] value,int count,int maxWeight){
@@ -168,11 +165,14 @@ public class Knapsack01 {
 
     /**
      * 二维数据组
+     * 时间复杂度：O(N*V)，
+     * 空间复杂度：O(N*V)
+     * 空间复杂度
      * 此处为了与填表中的数据保持一致，创建的数组元素多一个。
+     * 状态转移方程：f(i,v) = max{ f(i-1,v), f(i-1,v-c[i])+w[i] }
      * 动态规划
      */
     public int knapsack01Dp(int[][] dp,int[] weight,int[] value,int count,int maxWeight){
-
         //初始化第一列和第一行
         for(int i=0;i<dp.length;i++){
             dp[i][0] = 0;
@@ -201,7 +201,51 @@ public class Knapsack01 {
     }
 
     /**
+     * 二维数据组 滚动数组压缩
+     * 时间复杂度：O(N*V)，
+     * 空间复杂度：O(2*V)
+     * 空间复杂度
+     * 此处为了与填表中的数据保持一致，创建的数组元素多一个。
+     * 状态转移方程：f(i,v) = max{ f(i-1,v), f(i-1,v-c[i])+w[i] }
+     * 动态规划
+     */
+    public int knapsack01DpCompress(int[][] dp,int[] weight,int[] value,int count,int maxWeight){
+        //初始化第一列和第一行
+        for(int i=0;i<dp.length;i++){
+            dp[i][0] = 0;
+        }
+        for(int i=0;i<dp[0].length;i++){
+            dp[0][i] = 0;
+        }
+        int k = 0;
+        // 第 1 个物品 开始
+        for(int i = 1;i <= count;i++){
+            // 重点: >>>>> 这里 正序与倒序 无区别
+            for(int j = 1;j <= maxWeight;j++){
+                // i%2 获得滚动数组当前索引 k
+                k = i & 1;
+                dp[k][j] = dp[k^1][j];
+                // 当剩余负载 大于 所选物品的重量
+                if(j >= weight[i-1]){
+                    // 比较 选该物品与不选该物品的收益大小
+                    dp[k][j] = Math.max(dp[k^1][j-weight[i-1]]+value[i-1],dp[k][j]);
+                }
+                System.out.print(dp[i][j] + " ");
+            }
+            System.out.println();
+        }
+        print(dp,count,maxWeight);
+        return dp[k][maxWeight];
+    }
+
+
+
+    /**
      * 一维数组
+     * 滚动数组思想
+     * 时间复杂度：O(N*V)
+     * 空间复杂度：O(N*V)
+     * 状态转移方程：f(i,v) = max{ f(i-1,v), f(i-1,v-c[i])+w[i] }
      *
      */
     public int knapsack01One(int[] knapsack_one,int[] weight,int[] value,int count,int maxCapacity){

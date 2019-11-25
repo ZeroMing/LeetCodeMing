@@ -70,15 +70,17 @@ public class Leetcodeoj_1201_20191122 {
 
     然后再用【二分查找 - 百度百科】逼近第 n 个丑数
      。
-
     时间复杂度： 二分查找时间复杂度为 O(log2n)
     空间复杂度： O(1)
 
      */
 
     public static void main(String[] args) {
-        System.out.println(new Leetcodeoj_1201_20191122().nthUglyNumber(1000000000,2,217983653,336916467));
-
+        Leetcodeoj_1201_20191122 leetcodeoj = new Leetcodeoj_1201_20191122();
+        System.out.println(leetcodeoj.gcd(125,65));
+        System.out.println(leetcodeoj.gcd2(36,24));
+        System.out.println(leetcodeoj.lcm(125,65));
+        System.out.println(leetcodeoj.nthUglyNumber(1000000000,2,217983653,336916467));
     }
 
 
@@ -115,8 +117,14 @@ public class Leetcodeoj_1201_20191122 {
      * @return
      */
     public long lcm(long x,long y){
-        return x / gcd(x,y) * y;
+        return x * y / gcd(x,y) ;
     }
+
+
+
+
+
+
 
     /**
      * greatest common divisor
@@ -127,6 +135,61 @@ public class Leetcodeoj_1201_20191122 {
      */
     public long gcd(long x,long y){
         return y > 0 ? gcd(y, x % y) : x;
+    }
+
+
+
+    public long gcdNoRecursion(long x,long y){
+        long temp = 0;
+        while (y > 0) {
+            temp = x % y;
+            x = y;
+            y = temp;
+        }
+        return y;
+    }
+
+
+    /**
+     * 更相减损法
+     * 第一步：任意给定两个正整数；判断它们是否都是偶数。若是，则用2约简；若不是则执行第二步。
+     * 第二步：以较大的数减较小的数，接着把所得的差与较小的数比较，并以大数减小数。继续这个操作，直到所得的减数和差相等为止。
+     * 则第一步中约掉的若干个2与第二步中等数的乘积就是所求的最大公约数。
+     * 其中所说的“等数”，就是最大公约数。求“等数”的办法是“更相减损”法。所以更相减损法>也叫等值算法。
+     * 计算最大公约数
+     * @param x
+     * @param y
+     * @return
+     */
+    public long gcd2(long x,long y){
+
+        long i = 0,temp = 0,res = 0;
+        while (x%2 == 0 && y %2 == 0){
+            x = x /2;
+            y = y /2;
+            i ++;
+        }
+
+        if(x < y){
+            temp = x;
+            x = y;
+            y = temp;
+        }
+
+
+        while (y != (x - y)){
+            res = x - y;
+            x = res > y ? res : y;
+            y = res < y ? res:y;
+        }
+
+        if(i == 0){
+            return y;
+        }else{
+            return (int)Math.pow(2,i)*y;
+        }
+
+
     }
 
 
