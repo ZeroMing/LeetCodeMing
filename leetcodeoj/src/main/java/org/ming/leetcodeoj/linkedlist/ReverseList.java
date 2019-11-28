@@ -63,6 +63,7 @@ public class ReverseList {
             tempNode = head;
             head = head.next;
 
+            // newHead一直在变化
             tempNode.next = newHead;
             newHead = tempNode;
 
