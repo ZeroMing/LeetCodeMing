@@ -1,7 +1,6 @@
 package org.ming.leetcodeoj.stack;
-
-import com.sun.jmx.remote.internal.ArrayQueue;
-
+import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -14,11 +13,11 @@ public class Leetcodeoj_225_20190908_stack_easy {
 
     static class MyStack {
 
-        private ArrayQueue<Integer> queue;
+        private LinkedList<Integer> queue;
 
         /** Initialize your data structure here. */
         public MyStack() {
-            queue = new ArrayQueue<>(10);
+            queue = new LinkedList<Integer>();
         }
 
         /** Push element x onto stack. */
