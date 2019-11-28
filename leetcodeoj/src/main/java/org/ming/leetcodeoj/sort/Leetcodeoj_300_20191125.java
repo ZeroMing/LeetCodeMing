@@ -26,12 +26,15 @@ public class Leetcodeoj_300_20191125 {
         Leetcodeoj_300_20191125 leetcodeoj = new Leetcodeoj_300_20191125();
 //        int[] array = new int[]{1,2,3,4,5,6,10,2,3,4};
         int[] array = new int[]{10,9,2,5,3,7,101,18};
-        System.out.println(leetcodeoj.lengthOfLIS(array));
+        System.out.println(leetcodeoj.lengthOfLIS_2(array));
 
     }
 
-
-
+    /**
+     * 动态规划
+     * @param nums
+     * @return
+     */
     public int lengthOfLIS(int[] nums) {
         if(nums == null || nums.length == 0){
             return 0;
@@ -40,68 +43,66 @@ public class Leetcodeoj_300_20191125 {
             return 1;
         }
 
-        int max = 0;
-        for(int i= 0;i< nums.length-1;i++){
-            int count = 1;
-            int temp = nums[i];
-            for(int j = i+1;j < nums.length;j++){
-                if(temp < nums[j]){
-                    count ++;
-                    temp = nums[j];
-                }else if(nums[i] < nums[j]){
-                    count = 2;
-                    temp = nums[j];
-                }
-                if(max < count){
-                    max = count;
+        int[] dp = new int[nums.length];
+        for(int i=0;i<nums.length;i++){
+            dp[i] = 1;
+        }
+        for(int i= 0;i < nums.length;i++){
+            dp[i]= 1;
+            for(int j = 0;j < i;j++){
+                if(nums[j] < nums[i] && dp[j] >= dp[i]){
+                    dp[i] = dp[j] + 1;
                 }
             }
-
+        }
+        int max = 0;
+        for( int i = 0; i < nums.length; i++){
+            if(max < dp[i]){
+                max = dp[i];
+            }
         }
         return max;
     }
 
-
-    /*
-    5,3,2,5,6,2,7
-    2
-
-    1,3,4,5
-     */
-
-
-
+    // NlogN
     public int lengthOfLIS_2(int[] nums) {
         if(nums == null || nums.length == 0){
             return 0;
         }
+        if(nums.length == 1){
+            return 1;
+        }
         // 新数组
-        int[] newArray = new int[nums.length];
-        int maxL = 0;
-        for(int i= 0;i< nums.length;i++){
-            int l = 0,r = maxL;
-            while (l < r) {
-                int mid = (l+r)/ 2;
-                if(newArray[mid] < nums[i]){
-                    l = mid + 1;
-                }else{
-                    r = mid - 1;
+        int[] newArray = new int[nums.length+1];
+        // len=1 的原因是默认的自增子序列为1
+        int len = 1,left,right,mid;
+        newArray[len] = nums[0];
+        // N
+        for(int i= 1;i < nums.length;i++){
+            if(nums[i] > newArray[len]){
+                len ++;
+                newArray[len] = nums[i];
+            }else{
+                left = 1; right = len;
+                // log2N
+                while(left<=right){
+                    mid = (left+right)/2 ;
+                    if(newArray[mid]<nums[i]) {
+                        left = mid+1;
+                    } else {
+                        right = mid-1;
+                    }
                 }
-                System.out.println("L:"+l + " R:"+r +" MAX:"+maxL);
-            }
-            System.out.println("-------------------");
-            newArray[l] = nums[i];
-            if(l == maxL) {
-                maxL++;
+                newArray[left] = nums[i];
             }
             print(newArray);
         }
-        return maxL;
+        return len;
     }
 
 
     /**
-     * 脑子不好，打印来凑
+     * 脑子不好，打印来搞
      * @param array
      */
     public void print(int[] array){
