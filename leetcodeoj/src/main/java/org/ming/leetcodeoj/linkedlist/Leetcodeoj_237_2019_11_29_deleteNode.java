@@ -41,7 +41,7 @@ public class Leetcodeoj_237_2019_11_29_deleteNode {
         node2.next = node3;
         node3.next = node4;
         Leetcodeoj_237_2019_11_29_deleteNode leetcodeoj = new Leetcodeoj_237_2019_11_29_deleteNode();
-        leetcodeoj.deleteNode(node1,5);
+        leetcodeoj.deleteNode(node2);
         System.out.println(node1);
     }
 
@@ -59,6 +59,15 @@ public class Leetcodeoj_237_2019_11_29_deleteNode {
           }
           node = node.next;
         }
+    }
+
+    /**
+     * 原地删除
+     * @param node
+     */
+    public void deleteNode(ListNode node) {
+        node.val = node.next.val;
+        node.next = node.next.next;
     }
 
 
