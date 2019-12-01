@@ -1,5 +1,7 @@
 package org.ming.leetcodeoj.linkedlist;
 
+import javax.xml.soap.Node;
+
 /**
  *
  * 单链表反转
@@ -19,7 +21,7 @@ public class ReverseList {
         ListNode next4 = new ListNode(4,null);
         next3.next = next4;
 
-        ListNode listNode = reverseList.reverseList_2(head);
+        ListNode listNode = reverseList.reverseList_3(head);
 
     }
 
@@ -69,6 +71,21 @@ public class ReverseList {
 
         }
         return newHead;
+    }
+
+    /**
+     * 递归反转
+     * @param head
+     * @return
+     */
+    public ListNode reverseList_3(ListNode head){
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode reHead = reverseList_3(head.next);
+        head.next.next = head;
+        head.next = null;
+        return reHead;
     }
 
 
