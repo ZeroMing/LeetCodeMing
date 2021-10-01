@@ -8,22 +8,23 @@ import java.util.*;
  * set也可以判断字符串是否含有重复元素。相比两次循环每个元素都比较更优。
  * 滑动窗口：左指针固定，右指针不断右移。不满足条件时右指针固定，左指针右移动一位
  */
-public class _3_LengthOfLongestSubstring {
+public class _3M_LengthOfLongestSubstring {
 
     public static void main(String[] args) {
         String str = "abcdabcdefgacbdefghj";
-        System.out.println(lengthOfLongestSubstring0(str));
-        System.out.println(lengthOfLongestSubstring1(str));
-        System.out.println(lengthOfLongestSubstring2(str));
-        System.out.println(lengthOfLongestSubstring3(str));
-        System.out.println(lengthOfLongestSubstring4(str));
-        System.out.println(lengthOfLongestSubstring5(str));
+        System.out.println("暴力求解: " + lengthOfLongestSubstring0(str));
+        // System.out.println("滑动窗口list: " + lengthOfLongestSubstring1(str));
+        System.out.println("滑动窗口set: " + lengthOfLongestSubstring2(str));
+        System.out.println("滑动窗口map: " + lengthOfLongestSubstring3(str));
+        System.out.println("数组记录下标方法: " + lengthOfLongestSubstring4(str));
+        System.out.println("标准滑动窗口解法: " + lengthOfLongestSubstring5(str));
     }
 
 
     /**
      * 暴力求解
      * 优化，提前退出
+     *
      * @param s
      * @return
      */
@@ -34,15 +35,16 @@ public class _3_LengthOfLongestSubstring {
         int max = 0;
         Set<Character> set = new HashSet<>();
         // 双层for循环拼接不重复子串
-        outer: for (int i = 0; i < s.length(); i++) {
+        outer:
+        for (int i = 0; i < s.length(); i++) {
             // 将首字符放进去
             set.add(s.charAt(i));
             for (int j = i + 1; j < s.length(); j++) {
                 // 优化: 已经走到头了，说明就是最长的了，不需要再循环了
-                if(j == s.length() - 1 && !set.contains(s.charAt(j))){
+                if (j == s.length() - 1 && !set.contains(s.charAt(j))) {
                     // 直接返回
                     set.add(s.charAt(j));
-                    max = Math.max(max,set.size());
+                    max = Math.max(max, set.size());
                     break outer;
                 }
                 // 包含
@@ -63,34 +65,42 @@ public class _3_LengthOfLongestSubstring {
 
     /**
      * 滑动窗口
+     * 基于List，判重需要循环，性能不高
+     * 不推荐
      *
-     * @param str
+     * @param s
      * @return
      */
-    public static int lengthOfLongestSubstring1(String str) {
-        if (str == null || str.length() == 0) {
+    public static int lengthOfLongestSubstring1(String s) {
+
+        if (s == null || s.length() == 0) {
             return 0;
         }
-        int left = 0, right = 0, max = 0;
-        char[] chars = str.toCharArray();
-        List<Character> list = new ArrayList<>();
-        while (left < chars.length && right < chars.length) {
-            // 已经包含 该字符,不能删除，删除就没了
-            if (list.contains(chars[right])) {
-                // 找出第一次出现字符位置
-                list.remove((Character) chars[right]);
-                left++;
-            } else {
-                list.add(chars[right]);
-                right++;
-                max = Math.max(max, right - left);
+        // 右指针，字符不重复就不断添加
+        int right = -1;
+        // 最大长度
+        int ans = 0;
+        List<Character> set = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (i != 0) {
+                set.remove((Character) s.charAt(i - 1));
             }
+            // 包含重复子串
+            // 没超出字符串长度
+            while (right + 1 < s.length() && !set.contains(s.charAt(right + 1))) {
+                set.add(s.charAt(right + 1));
+                right++;
+            }
+
+            // 遇到重复元素，记录最大长度
+            ans = Math.max(ans, right - i + 1);
         }
-        return max;
+        return ans;
     }
 
 
     /**
+     * 滑动窗口
      * set集合判重
      *
      * @param s
@@ -100,17 +110,26 @@ public class _3_LengthOfLongestSubstring {
         if (s == null || s.length() == 0) {
             return 0;
         }
-        int left = 0, right = 0, max = 0, len = s.length();
+        // 右指针，字符不重复就不断添加
+        int right = -1;
+        // 最大长度
+        int ans = 0;
         Set<Character> set = new HashSet<>();
-        while (left < len && right < len) {
-            if (!set.contains(s.charAt(right))) {
-                set.add(s.charAt(right++));
-                max = Math.max(max, right - left);
-            } else {
-                set.remove(s.charAt(left++));
+        for (int i = 0; i < s.length(); i++) {
+            if (i != 0) {
+                set.remove(s.charAt(i - 1));
             }
+            // 包含重复子串
+            // 没超出字符串长度
+            while (right + 1 < s.length() && !set.contains(s.charAt(right + 1))) {
+                set.add(s.charAt(right + 1));
+                right++;
+            }
+
+            // 遇到重复元素，记录最大长度
+            ans = Math.max(ans, right - i + 1);
         }
-        return max;
+        return ans;
     }
 
 
@@ -119,29 +138,31 @@ public class _3_LengthOfLongestSubstring {
      * 基于Map存储
      * map集合，存放字符和字符最后一次出现的位置
      * 每次出现相同元素就把start移动到 start和end中相同元素出现的 下一位
-     * @param str
+     *
+     * @param s
      * @return
      */
-    public static int lengthOfLongestSubstring3(String str) {
-        if (str == null || str.length() == 0) {
+    public static int lengthOfLongestSubstring3(String s) {
+        if (s == null || s.length() == 0) {
             return 0;
         }
-        int left = 0, right = 0, max = 0;
-        char[] chars = str.toCharArray();
+        int ans = 0, left = 0, right = 0;
         // 最近一次出现的位置，+1
         Map<Character, Integer> map = new HashMap<>();
         //
-        while (right < chars.length) {
-            // 如果包含key
-            if (map.containsKey(chars[right])) {
-                // 相同字符出现位置的下一位，start不能比当前的start小
-                left = Math.max(map.get(chars[right])+1, left);
+        for (; right < s.length(); right++) {
+            // 取值
+            char c = s.charAt(right);
+            if (map.containsKey(c)) {
+                // 相同字符出现位置出现的下一位，left不能比当前的left小
+                left = Math.max(map.get(c) + 1, left);
             } else {
-                map.put(chars[right], right++);
-                max = Math.max(max, right - left);
+                // 当前字符的下标值
+                map.put(c, s.indexOf(c));
+                ans = Math.max(ans, right - left + 1);
             }
         }
-        return max;
+        return ans;
     }
 
 
@@ -153,20 +174,31 @@ public class _3_LengthOfLongestSubstring {
         if (s == null || s.length() == 0) {
             return 0;
         }
-        int left = 0, i = 0, max = 0;
-        int[] array = new int[128];
-        Arrays.fill(array, -1);
+        int i = 0, ans = 0;
+        // 记录ASCII 码字符出现的位置，以字符为下标
+        int[] dict = new int[128];
+        Arrays.fill(dict, -1);
         //
+        int ASCII;
+        int repeatValue = -1;
         while (i < s.length()) {
             // char 字符
-            int ascii = s.charAt(i);
-            left = Math.max(left, array[ascii] + 1);
-            max = Math.max(max, i - left + 1);
-            // 当前下标赋值到数组的相应位置，比如：a的值为10
-            array[ascii] = i;
-            i++;
+            ASCII = s.charAt(i);
+            // 如果当前值 > repeatValue ,证明当前位置已经赋值过一次了，字符重复
+            if (dict[ASCII] > repeatValue) {
+                // 重复的值被设置为新的值
+                repeatValue = dict[ASCII];
+            } else {
+                // 最后一次出现的位置
+                dict[ASCII] = i;
+                ans = Math.max(ans, i - repeatValue);
+                if (ans >= s.length() - repeatValue - 1) {
+                    return ans;
+                }
+                i++;
+            }
         }
-        return max;
+        return ans;
     }
 
 
@@ -194,14 +226,13 @@ public class _3_LengthOfLongestSubstring {
             window.put(newChar, window.getOrDefault(newChar, 0) + 1);
             // 如果窗口中该元素重复，则缩小窗口直至不重复
             while (window.get(newChar) > 1) {
-                //
+                // 移除最左边的元素
                 char removeChar = s.charAt(left);
-                // 缩小窗口
+                // 缩小窗口，[1,1,1,2,2,2,3,3,3]
                 left++;
                 // 处理下窗口被移除的元素 removeChar
                 window.put(removeChar, window.get(removeChar) - 1);
             }
-            System.out.println("滑动窗口 ： " + window);
             // 我们的窗口是左开右闭的，所以这里窗口的长度不要 +1 !!!
             res = Math.max(res, right - left);
         }
