@@ -36,12 +36,15 @@ public class _15M_ThreeSum {
     -105 <= nums[i] <= 105
      */
     public static void main(String[] args) {
-        int[] nums = new int[]{-1, 0, 1, 2, -1, -4};
+        int[] nums = new int[]{1, 2, -2, -1};
         System.out.println(threeSum1(nums));
     }
 
 
     public static List<List<Integer>> threeSum1(int[] nums) {
+        if (nums.length < 3) {
+            return new ArrayList<>(0);
+        }
         return threeSumTarget(nums, 0);
     }
 
@@ -50,14 +53,16 @@ public class _15M_ThreeSum {
         Arrays.sort(nums);
         List<List<Integer>> ans = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
-            List<List<Integer>> tuples = twoSumTarget(nums, i, target - nums[i]);
+            List<List<Integer>> tuples = twoSumTarget(nums, i + 1, target - nums[i]);
             ListIterator<List<Integer>> iterator = tuples.listIterator();
             while (iterator.hasNext()) {
                 List<Integer> tuple = iterator.next();
-                tuple.add((Integer) nums[i]);
+                tuple.add(nums[i]);
                 ans.add(tuple);
             }
-            while (i < nums.length - 1 && nums[i] == nums[i + 1]) i++;
+            while (i < nums.length - 1 && nums[i] == nums[i + 1]) {
+                i++;
+            }
         }
         return ans;
     }
@@ -65,7 +70,7 @@ public class _15M_ThreeSum {
 
     public static List<List<Integer>> twoSumTarget(int[] nums, int start, int target) {
         // 排序
-        Arrays.sort(nums);
+        // Arrays.sort(nums);
         // 慢指针
         int low = start;
         // 快指针
@@ -76,21 +81,25 @@ public class _15M_ThreeSum {
             int right = nums[hi];
             int sum = left + right;
             if (sum < target) {
-                while (low < hi && nums[low] == left)
+                while (low < hi && nums[low] == left) {
                     low++;
+                }
             } else if (sum > target) {
-                while (low < hi && nums[hi] == right)
+                while (low < hi && nums[hi] == right) {
                     hi--;
+                }
             } else {
                 List<Integer> tuple = new ArrayList<>();
                 tuple.add(nums[low]);
                 tuple.add(nums[hi]);
                 ans.add(tuple);
                 // 优化： 跳过所有重复的元素
-                while (low < hi && nums[low] == left)
+                while (low < hi && nums[low] == left) {
                     low++;
-                while (low < hi && nums[hi] == right)
+                }
+                while (low < hi && nums[hi] == right) {
                     hi--;
+                }
             }
         }
         return ans;
@@ -102,7 +111,7 @@ public class _15M_ThreeSum {
     }
 
 
-    public static List<List<Integer>> twoSum3(int[] nums) {
+    public static List<List<Integer>> threeSum3(int[] nums) {
 
         return null;
     }
