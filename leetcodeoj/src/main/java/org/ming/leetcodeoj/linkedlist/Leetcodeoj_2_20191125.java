@@ -1,5 +1,7 @@
 package org.ming.leetcodeoj.linkedlist;
 
+import org.ming.common.ListNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,25 +119,6 @@ public class Leetcodeoj_2_20191125 {
         return rootNode;
     }
 
-}
-
-class ListNode{
-    int val;
-    ListNode next;
-    ListNode(int x) { val = x; }
-
-    @Override
-    public String toString() {
-        List<Integer> list = new ArrayList<>();
-        list.add(val);
-        ListNode tempNode = next;
-        while (tempNode != null){
-            list.add(tempNode.val);
-            tempNode = tempNode.next;
-        }
-        // Collections.reverse(list);
-        return list.toString();
-    }
 }
 
 

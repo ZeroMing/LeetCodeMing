@@ -1,5 +1,7 @@
 package org.ming.leetcodeoj.linkedlist;
 
+import org.ming.common.ListNode;
+
 /**
  * @author: LeoLee
  * @date: 2019/11/29 10:26
@@ -47,7 +49,7 @@ public class Leetcodeoj_237_2019_11_29_deleteNode {
 
     // -1,4,5,6
 
-    public void deleteNode(ListNode node,int value) {
+    public void deleteNode(ListNode node, int value) {
         ListNode prev = new ListNode(-1);
         prev.next = node;
         while (node != null){
