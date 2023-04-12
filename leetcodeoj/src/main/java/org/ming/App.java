@@ -1,5 +1,7 @@
 package org.ming;
 
+import org.ming.common.ListNode;
+
 import java.util.*;
 
 /**
@@ -31,5 +33,18 @@ public class App {
             }
         }
         return list;
+    }
+
+    public static ListNode generateNodeList(int[] arrays) {
+        if (arrays == null || arrays.length == 0) {
+            return null;
+        }
+        ListNode root = new ListNode(arrays[0]),cur = root;
+        for (int i = 1; i < arrays.length; i++) {
+            ListNode nextNode = new ListNode(arrays[i]);
+            cur.next = nextNode;
+            cur = nextNode;
+        }
+        return root;
     }
 }
